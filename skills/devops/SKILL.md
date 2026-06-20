@@ -1,7 +1,7 @@
 ---
 name: devops
 description: "Use when setting up CI/CD, deployments, environment management, or operational health checks."
-version: 0.2.0
+version: 0.3.0
 author: NoEgoDev
 license: MIT
 metadata:
@@ -28,17 +28,24 @@ Make the product shippable and observable. NED devops chooses boring, reliable a
 
 ## Access and Tooling Prerequisites
 
-Before designing CI/CD or deployment, check whether the agent already has working access to the essential external tools. If access is missing, pause and ask the user to grant it with the easiest safe path.
+Before designing CI/CD or deployment, check whether the agent already has working access to the essential external tools. Devops work should begin with an **upfront access request** that covers the whole deployment/operations lifecycle, not one small permission request at a time.
 
 Essential access usually means:
 
-- **GitHub** or the repository host: permission to read/write the repo, create branches/PRs, configure Actions, and add repository secrets.
-- **Cloud/deployment provider**: permission to create/manage the app, environment variables, deploy hooks, logs, domains, and rollback settings.
-- **Optional but common**: package registry, database provider, error monitoring, DNS provider, and analytics/observability tools.
+- **GitHub** or the repository host: permission to read/write the repo, create branches/PRs, configure Actions, manage environments, and add repository secrets.
+- **Cloud/deployment provider**: permission to create/manage the app, services, databases, storage, environment variables, deploy hooks, logs, domains, rollback settings, and billing-safe resource settings.
+- **Optional but common**: package registry, database provider, DNS provider, error monitoring, uptime monitoring, analytics/observability tools, and third-party APIs used by the app.
 
-Ask for the minimum permissions needed for the current phase. Prefer short-lived CLI/browser auth, scoped tokens, or adding the user as an owner/collaborator over asking them to paste broad secrets.
+Ask once, upfront, for the complete set of access needed to deploy and manage the service end-to-end. The goal is to let the agent perform all normal devops operations—CI/CD, staging/prod deploys, secrets setup, logs, monitoring, rollback, domain wiring, and incident checks—without repeatedly stopping to ask the user for each permission. Prefer owner/admin/collaborator access to the specific project/team/repo/provider when that is the simplest safe option; otherwise request scoped tokens or CLI/browser auth with the minimum scopes that cover the full lifecycle.
 
-## Easiest-Path Access Request
+Do not ask the user to paste broad secrets into chat. Prefer:
+
+- user authenticates the local CLI/browser session;
+- user adds the agent/user account as a repo/cloud collaborator with the required role;
+- user creates scoped tokens and stores them directly in the appropriate secret manager;
+- user confirms non-secret identifiers such as project/team/service names after access is granted.
+
+## Upfront Access Request
 
 When access is missing, choose the simplest option for the user and give step-by-step instructions. Do not dump a menu of every cloud provider unless the product constraints require it.
 
@@ -52,15 +59,23 @@ Default recommendations:
 Access request template:
 
 ```text
-I need access to <tool/provider> to set up <CI/deploy/secrets/logs>.
+I need upfront access to <repo/provider/tooling> so I can deploy and manage <service/project> end-to-end without interrupting you for every devops operation.
+
+Please grant access for these operations:
+- Repository/CI: read/write code, create branches/PRs, edit GitHub Actions/workflows, manage repo environments, and add/update repository or environment secrets.
+- Deployment provider: create/manage apps/services, staging and production environments, env vars/secrets, deploy hooks, logs, domains, rollback/redeploys, and billing-safe resource settings.
+- Supporting systems if used: database/storage, DNS, package registry, monitoring/error tracking/uptime alerts, and third-party API dashboards.
+
 Easiest path:
 1. <open URL or run command>
 2. <click/select exact option>
-3. <grant exact permission/scope>
-4. <tell me when done or paste only the non-secret confirmation value>
+3. <grant exact role/scope, preferably project/team/repo-scoped admin or owner if safe>
+4. <confirm access by telling me non-secret project/team/service names, not passwords or raw secrets>
 
-I will not ask for broad secrets unless required. If a token is unavoidable, create a scoped token with: <scopes>, and add it as <repo/cloud secret name> rather than sending it in chat.
+I will not ask for broad secrets in chat. If a token is unavoidable, create a scoped token with: <scopes>, and add it directly as <repo/cloud secret name> or authenticate the local CLI/browser session instead.
 ```
+
+After the user grants access, verify it immediately with the relevant CLI/API (`gh auth status`, provider whoami/project list, repo secret/environment visibility where possible) and continue without asking again unless a new external system or stronger permission is genuinely required.
 
 Concrete GitHub steps to offer:
 
@@ -129,21 +144,23 @@ Prefer one concise, current runbook over scattered notes. If a provider generate
 ## Workflow
 
 1. Inspect stack, hosting constraints, existing pipelines, and current authenticated access.
-2. If GitHub/repo-host or cloud-provider access is missing, ask the user for access using the easiest-path step-by-step instructions above.
-3. Add the smallest CI workflow that blocks broken code.
-4. Configure separate staging and production environments, including separate secrets/env var namespaces.
-5. Add deployment automation that auto-deploys staging after CI passes on the integration branch.
-6. Add a safe production deployment path with an explicit approval/tag/manual trigger unless the user asks for fully automatic production deploys.
-7. Document required secrets as names only; never commit secret values.
-8. Create or update the per-project deployment and system monitoring runbook at `.projects/<project>/runbooks/deployment-and-monitoring.md`.
-9. Add health checks and operational runbook details.
-10. Verify by running CI locally where possible, checking staging deployment status, and confirming the production deploy path and monitoring setup are documented.
+2. If end-to-end devops access is missing, make one upfront access request covering repository/CI, deployment provider, secrets/environments, logs, monitoring, rollback, domains, and supporting services needed for this project. Use the easiest-path step-by-step instructions above.
+3. Verify granted access immediately with CLI/API checks, then proceed without repeated permission prompts unless a new external system or stronger permission is genuinely required.
+4. Add the smallest CI workflow that blocks broken code.
+5. Configure separate staging and production environments, including separate secrets/env var namespaces.
+6. Add deployment automation that auto-deploys staging after CI passes on the integration branch.
+7. Add a safe production deployment path with an explicit approval/tag/manual trigger unless the user asks for fully automatic production deploys.
+8. Document required secrets as names only; never commit secret values.
+9. Create or update the per-project deployment and system monitoring runbook at `.projects/<project>/runbooks/deployment-and-monitoring.md`.
+10. Add health checks and operational runbook details.
+11. Verify by running CI locally where possible, checking staging deployment status, and confirming the production deploy path and monitoring setup are documented.
 
 ## Verification Checklist
 
 - [ ] CI runs tests/build on pull requests.
-- [ ] GitHub/repo-host access was checked, or the user received easiest-path access instructions.
-- [ ] Cloud/deployment-provider access was checked, or the user received easiest-path access instructions.
+- [ ] End-to-end devops access was checked upfront across repository/CI, deployment provider, secrets/environments, logs, monitoring, rollback, domains, and supporting services.
+- [ ] If access was missing, the user received one easiest-path upfront access request broad enough to avoid repeated permission prompts during normal devops operations.
+- [ ] Granted access was verified with CLI/API checks before proceeding.
 - [ ] The chosen provider is the easiest viable path for the user and product stage.
 - [ ] Staging and production environments are configured or explicitly documented as required setup.
 - [ ] Staging auto-deploys from the integration branch after CI passes.
