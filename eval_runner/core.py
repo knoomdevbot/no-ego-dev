@@ -107,13 +107,68 @@ def _copy_distribution(run_profile: Path) -> None:
             shutil.copy2(src, dst)
 
 
-def _judge_output(output: str, expectations: list[str]) -> tuple[bool, list[str]]:
-    lower = output.lower()
-    failures = [f"Expectation not observed in output: {exp}" for exp in expectations if exp.lower() not in lower]
-    return not failures, failures
+def _copy_runtime_credentials(run_profile: Path) -> None:
+    """Copy local Hermes runtime credentials into the isolated eval profile.
+
+    Eval runs must exercise a real Hermes profile, which means provider auth must
+    be available in the temporary HERMES_HOME. These files are copied only into
+    the per-run directory under .eval-runs/ and must never be committed.
+    """
+    raw_home = os.environ.get("HERMES_EVAL_CREDENTIAL_HOME") or os.environ.get("HERMES_HOME")
+    source_home = Path(raw_home).expanduser() if raw_home else Path.home() / ".hermes"
+    for name in ["auth.json", ".env"]:
+        src = source_home / name
+        if src.exists() and src.is_file():
+            shutil.copy2(src, run_profile / name)
 
 
-def run_eval(eval_path: str | Path, output_root: str | Path = ".eval-runs", hermes_command: str | None = "hermes") -> EvalResult:
+def _extract_json_object(text: str) -> dict[str, Any]:
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        stripped = stripped.strip("`")
+        if stripped.startswith("json"):
+            stripped = stripped[4:].strip()
+    start = stripped.find("{")
+    end = stripped.rfind("}")
+    if start == -1 or end == -1 or end < start:
+        raise ValueError(f"Judge did not return a JSON object: {text[:500]}")
+    data = json.loads(stripped[start : end + 1])
+    if not isinstance(data, dict):
+        raise ValueError("Judge JSON must be an object")
+    return data
+
+
+def _judge_with_hermes(output: str, spec: EvalSpec, hermes_command: str, env: dict[str, str]) -> tuple[bool, list[str], str]:
+    judge_prompt = f"""You are judging a NoEgoDev EVAL.yaml run.
+
+Eval prompt:
+{spec.prompt}
+
+Expectations, interpreted as semantic criteria rather than literal substrings:
+{json.dumps(spec.expectations, indent=2)}
+
+Candidate output:
+{output}
+
+Return only JSON with this exact schema:
+{{"passed": boolean, "failure_reasons": string[]}}
+"""
+    command = f"{hermes_command} -z {json.dumps(judge_prompt)}"
+    proc = subprocess.run(command, cwd=Path(env["HERMES_HOME"]).parent, shell=True, text=True, capture_output=True, timeout=1800, env=env)
+    judge_output = proc.stdout + proc.stderr
+    if proc.returncode != 0:
+        return False, [f"Hermes judge command failed with exit code {proc.returncode}"], judge_output
+    data = _extract_json_object(judge_output)
+    passed = bool(data.get("passed"))
+    raw_reasons = data.get("failure_reasons", [])
+    if not isinstance(raw_reasons, list):
+        raw_reasons = [str(raw_reasons)]
+    return passed, [str(reason) for reason in raw_reasons], judge_output
+
+
+def run_eval(eval_path: str | Path, output_root: str | Path = ".eval-runs", hermes_command: str = "hermes") -> EvalResult:
+    if not hermes_command or not hermes_command.strip():
+        raise ValueError("hermes_command is required; evals must run through a real Hermes-compatible oneshot command")
     spec = load_eval(eval_path)
     started = time.monotonic()
     stamp = time.strftime("%Y%m%d-%H%M%S")
@@ -122,6 +177,7 @@ def run_eval(eval_path: str | Path, output_root: str | Path = ".eval-runs", herm
     run_dir.mkdir(parents=True, exist_ok=True)
     run_profile.mkdir(parents=True, exist_ok=True)
     _copy_distribution(run_profile)
+    _copy_runtime_credentials(run_profile)
     env = os.environ.copy()
     env["HERMES_HOME"] = str(run_profile)
     output_parts: list[str] = []
@@ -129,26 +185,20 @@ def run_eval(eval_path: str | Path, output_root: str | Path = ".eval-runs", herm
     token_counts = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
     try:
         output_parts.extend(_run_shell_commands(spec.setup_commands, spec.path.parent, env))
-        if hermes_command:
-            prompt_file = run_dir / "prompt.txt"
-            prompt_file.write_text(spec.prompt)
-            # Hermes one-shot mode uses the active HERMES_HOME as the isolated profile.
-            # The historical shorthand is `hermes -z PROMPT`.
-            command = f"{hermes_command} -z {json.dumps(spec.prompt)}"
-            proc = subprocess.run(command, shell=True, text=True, capture_output=True, timeout=1800, env=env)
-            output_parts.append(proc.stdout + proc.stderr)
-            if proc.returncode != 0:
-                failure_reasons.append(f"Hermes command failed with exit code {proc.returncode}")
+        prompt_file = run_dir / "prompt.txt"
+        prompt_file.write_text(spec.prompt)
+        # Hermes one-shot mode uses the active HERMES_HOME as the isolated profile.
+        # The historical shorthand is `hermes -z PROMPT`.
+        command = f"{hermes_command} -z {json.dumps(spec.prompt)}"
+        proc = subprocess.run(command, cwd=run_dir, shell=True, text=True, capture_output=True, timeout=1800, env=env)
+        output_parts.append(proc.stdout + proc.stderr)
+        if proc.returncode != 0:
+            failure_reasons.append(f"Hermes command failed with exit code {proc.returncode}")
+            passed = False
         else:
-            # Deterministic offline mode for CI/local smoke tests: judge the static
-            # artifact text without making model calls or touching external systems.
-            skill_file = spec.path.parent / "SKILL.md"
-            static_text = spec.path.read_text()
-            if skill_file.exists():
-                static_text += "\n" + skill_file.read_text()
-            output_parts.append(static_text)
-        passed, expectation_failures = _judge_output("\n".join(output_parts), spec.expectations)
-        failure_reasons.extend(expectation_failures)
+            passed, expectation_failures, judge_output = _judge_with_hermes("\n".join(output_parts), spec, hermes_command, env)
+            output_parts.append("\n--- JUDGE OUTPUT ---\n" + judge_output)
+            failure_reasons.extend(expectation_failures)
     except Exception as exc:
         passed = False
         failure_reasons.append(str(exc))

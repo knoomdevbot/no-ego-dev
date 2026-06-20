@@ -14,7 +14,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-root", default=".eval-runs", help="Directory for per-eval result folders")
     parser.add_argument("--report", default=None, help="Report output prefix (default: .eval-runs/report-<timestamp>)")
     parser.add_argument("--markdown", action="store_true", help="Also generate a Markdown report")
-    parser.add_argument("--no-hermes", action="store_true", help="Skip invoking Hermes and only validate/report")
     parser.add_argument("--hermes-command", default="hermes", help="Hermes executable/command to invoke")
     args = parser.parse_args(argv)
 
@@ -22,8 +21,7 @@ def main(argv: list[str] | None = None) -> int:
     if not evals:
         print("No EVAL.yaml files found", file=sys.stderr)
         return 1
-    hermes_command = None if args.no_hermes else args.hermes_command
-    results = [run_eval(path, output_root=args.output_root, hermes_command=hermes_command) for path in evals]
+    results = [run_eval(path, output_root=args.output_root, hermes_command=args.hermes_command) for path in evals]
     prefix = Path(args.report) if args.report else Path(args.output_root) / f"report-{time.strftime('%Y%m%d-%H%M%S')}"
     html, md = render_reports(results, prefix, markdown=args.markdown)
     print(f"HTML report: {html}")

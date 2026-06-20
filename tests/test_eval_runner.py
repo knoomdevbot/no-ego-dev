@@ -1,7 +1,22 @@
 from pathlib import Path
 import json
+import sys
 
 from eval_runner.core import discover_eval_files, load_eval, render_reports, run_eval
+
+
+def _fake_hermes_command(tmp_path: Path, output: str = "done appears") -> str:
+    script = tmp_path / "fake_hermes.py"
+    script.write_text(
+        "import json, os, sys\n"
+        "assert os.environ.get('HERMES_HOME'), 'HERMES_HOME must point at the isolated eval profile'\n"
+        "prompt = sys.argv[-1] if sys.argv else ''\n"
+        "if 'Return only JSON' in prompt:\n"
+        "    print(json.dumps({'passed': True, 'failure_reasons': []}))\n"
+        "else:\n"
+        f"    print({output!r})\n"
+    )
+    return f"{sys.executable} {script}"
 
 
 def test_discovers_eval_yaml_files(tmp_path):
@@ -26,13 +41,13 @@ def test_load_eval_validates_required_fields(tmp_path):
     assert spec.parameters["repo"] == "local"
 
 
-def test_run_eval_writes_result_json_without_hermes(tmp_path):
+def test_run_eval_writes_result_json_using_hermes_oneshot_command(tmp_path):
     eval_dir = tmp_path / "skill"
     eval_dir.mkdir()
     eval_path = eval_dir / "EVAL.yaml"
     eval_path.write_text("prompt: Say done\nexpectations:\n  - done appears\nparameters:\n  mode: offline\n")
 
-    result = run_eval(eval_path, output_root=tmp_path / "runs", hermes_command=None)
+    result = run_eval(eval_path, output_root=tmp_path / "runs", hermes_command=_fake_hermes_command(tmp_path))
 
     assert result.eval_path == str(eval_path)
     assert result.passed is True
@@ -43,12 +58,26 @@ def test_run_eval_writes_result_json_without_hermes(tmp_path):
     assert data["failure_reasons"] == []
 
 
+def test_run_eval_rejects_missing_hermes_command(tmp_path):
+    eval_dir = tmp_path / "skill"
+    eval_dir.mkdir()
+    eval_path = eval_dir / "EVAL.yaml"
+    eval_path.write_text("prompt: Say done\nexpectations:\n  - done\n")
+
+    try:
+        run_eval(eval_path, output_root=tmp_path / "runs", hermes_command="")
+    except ValueError as exc:
+        assert "hermes_command is required" in str(exc)
+    else:
+        raise AssertionError("run_eval should reject a missing Hermes command")
+
+
 def test_render_reports_outputs_html_and_markdown(tmp_path):
     eval_dir = tmp_path / "skill"
     eval_dir.mkdir()
     eval_path = eval_dir / "EVAL.yaml"
     eval_path.write_text("prompt: Echo done\nexpectations:\n  - done\n")
-    result = run_eval(eval_path, output_root=tmp_path / "runs", hermes_command=None)
+    result = run_eval(eval_path, output_root=tmp_path / "runs", hermes_command=_fake_hermes_command(tmp_path, "done"))
 
     html, md = render_reports([result], tmp_path / "report", markdown=True)
 

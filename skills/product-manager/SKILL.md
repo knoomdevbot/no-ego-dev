@@ -45,7 +45,11 @@ Include:
 
 ## Verification Checklist
 
+Before finishing, include a brief verification note that states what artifact was created or updated, where it lives, and how the PRD was checked against the request.
+
 - [ ] PRD has value proposition or user problem.
 - [ ] PRD has one primary CUJ.
 - [ ] Acceptance criteria are objective.
 - [ ] Feature conflicts are addressed.
+- [ ] Durable artifact path is named, e.g. `.projects/<project>/prds/<prd>.md`.
+- [ ] Verification evidence explains how the artifact satisfies the client request and what assumptions remain.

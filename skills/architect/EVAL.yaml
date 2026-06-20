@@ -4,6 +4,9 @@ expectations:
   - "mentions durable artifact"
   - "includes verification"
   - "avoids vague next steps"
+  - "chooses or recommends the easiest-to-maintain viable hosting provider"
+  - "considers MVP cost when recommending hosting"
+  - "asks the user to choose only when provider tradeoffs materially affect cost, architecture, compliance, or access"
 setupCommands: []
 teardownCommands: []
 parameters:

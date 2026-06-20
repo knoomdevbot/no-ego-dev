@@ -4,6 +4,14 @@ expectations:
   - "mentions durable artifact"
   - "includes verification"
   - "avoids vague next steps"
+  - "asks for GitHub or repository-host access when needed"
+  - "asks for cloud or deployment-provider access when needed"
+  - "provides easiest-path step-by-step instructions for granting access"
+  - "requires both staging and production environments"
+  - "auto-deploys staging after CI passes on the integration branch"
+  - "protects production deploy with approval, tag, protected branch, or explicit command"
+  - "maintains a per-project deployment and system monitoring document"
+  - "documents environment inventory, deployment flow, secrets by name, health checks, logs, dashboards or alerts, rollback, and operational procedures"
 setupCommands: []
 teardownCommands: []
 parameters:
