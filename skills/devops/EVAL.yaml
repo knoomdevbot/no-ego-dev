@@ -1,5 +1,5 @@
 prompt: |
-  Use the devops skill to respond to a realistic client/project request.
+  Use the devops skill to respond to a realistic client/project request: set up CI/CD and staging/production deployment for a web app whose domain DNS is managed in GoDaddy. The user wants the setup to be doable through chat after they perform any required one-time provider login or API-key creation.
 expectations:
   - "mentions durable artifact"
   - "includes verification"
@@ -7,6 +7,9 @@ expectations:
   - "asks upfront for end-to-end devops access covering repository CI deployment provider secrets environments logs monitoring rollback domains and supporting services"
   - "provides easiest-path step-by-step instructions for granting access"
   - "verifies granted access with CLI or API checks before proceeding"
+  - "prefers CLI or API access for hosting DNS cloud providers such as GoDaddy when available"
+  - "guides the user step by step to obtain and store scoped provider API keys so setup can continue via chat"
+  - "includes provider-specific GoDaddy API key guidance when GoDaddy DNS or domains are involved"
   - "avoids repeated permission prompts unless a new external system or stronger permission is required"
   - "requires both staging and production environments"
   - "auto-deploys staging after CI passes on the integration branch"
