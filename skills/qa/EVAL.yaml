@@ -1,0 +1,15 @@
+prompt: |
+  Use the qa skill to create or run a realistic UI smoke test plan for a deployed project and describe the required report.
+expectations:
+  - "creates or updates a smoke or feature test plan"
+  - "uses a separate artifact folder for each QA run"
+  - "includes pass/fail or blocked results with failure details"
+  - "captures screenshots or visual evidence for UI failures"
+  - "searches the issue management system before filing bugs"
+  - "files or updates bug issues for discovered product defects"
+  - "reports obvious user-facing issues even outside the plan scope"
+  - "cleans up the local artifact folder only after report upload is verified"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

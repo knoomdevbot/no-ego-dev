@@ -4,6 +4,11 @@ expectations:
   - "mentions durable artifact"
   - "includes verification"
   - "avoids vague next steps"
+  - "includes progress update cadence or phase progress updates"
+  - "delegates product, architecture, coding, devops, or QA work to specialist subagents"
+  - "creates a linked follow-up QA task after implementation task completion"
+  - "requires QA pass/fail reports with screenshots and bug links"
+  - "triages open bugs before completing a milestone and closes invalid obsolete or wont-fix bugs with rationale"
 setupCommands: []
 teardownCommands: []
 parameters:
