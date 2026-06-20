@@ -68,7 +68,7 @@ agent:
 terminal:
   backend: local
   modal_mode: auto
-  cwd: /Users/moonk/.openclaw/workspace
+  cwd: /Users/moonk/.hermes/workspaces/no-ego-dev
   timeout: 180
   env_passthrough: []
   shell_init_files: []
