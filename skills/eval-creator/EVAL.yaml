@@ -1,0 +1,11 @@
+prompt: |
+  Use the eval-creator skill to respond to a realistic client/project request.
+expectations:
+  - "EVAL.yaml"
+  - "evaldata"
+  - "expectations"
+  - "pinned"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

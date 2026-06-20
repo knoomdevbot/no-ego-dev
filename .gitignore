@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.EXAMPLE
+auth.json
+sessions/
+memories/
+logs/
+workspace/
+state.db*
+*_cache/
+local/
+.pytest_cache/
+__pycache__/
+*.pyc
+.eval-runs/
+.DS_Store

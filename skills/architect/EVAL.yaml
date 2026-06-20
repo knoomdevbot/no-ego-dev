@@ -1,0 +1,10 @@
+prompt: |
+  Use the architect skill to respond to a realistic client/project request.
+expectations:
+  - "mentions durable artifact"
+  - "includes verification"
+  - "avoids vague next steps"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md
