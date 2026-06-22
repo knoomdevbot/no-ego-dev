@@ -1,7 +1,7 @@
 ---
 name: devops
 description: "Use when setting up CI/CD, deployments, environment management, or operational health checks."
-version: 0.4.0
+version: 0.5.0
 author: NoEgoDev
 license: MIT
 metadata:
@@ -184,6 +184,80 @@ Recommended default triggers:
 - Merge to `main`/integration branch → CI, build, then auto-deploy to staging.
 - Release tag or manual approval → deploy to production.
 
+## API Key and Secret Store Management
+
+API keys, webhook signing secrets, OAuth client secrets, database URLs, deployment tokens, and third-party service credentials must live in a **secret store**, not in source files, chat transcripts, shell history, copied `.env` snippets, or project docs.
+
+Default policy:
+
+1. **Choose a secret store first** before asking for or creating API keys. Preferred stores, in order:
+   - Team/project password manager with CLI support, especially **1Password** (`op`) when available.
+   - Cloud/provider secret manager such as AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, Doppler, Infisical, or the deployment provider's native encrypted environment/secret store.
+   - macOS Keychain or `pass` only for single-developer/local projects when no team store exists.
+2. Store each secret under a stable, environment-scoped path or item name such as `<project>/<environment>/<SECRET_NAME>` or a 1Password item tagged with project and environment.
+3. Keep source-controlled files limited to:
+   - `.env.example` with variable names and safe placeholders only;
+   - `.projects/<project>/runbooks/deployment-and-monitoring.md` with secret names, store/path references, owners, rotation notes, and consumers, but never secret values;
+   - loader scripts that fetch values from the store at runtime.
+4. Load secrets into local development only through a script or CLI injection command. Do not manually copy/paste long-lived keys into `.env.local` unless there is no store-backed option.
+5. Treat CI and deployment environments as separate consumers: sync or reference secrets from the store into GitHub Actions/provider encrypted secrets, never from committed files.
+6. Rotate keys when they have been pasted into chat, exposed in logs, shared with broader scopes than needed, or when ownership changes.
+
+### Local Secret Loader Script
+
+Every project with external API keys should include a small script that loads local environment variables from the chosen secret store. Use the bundled template at `skills/devops/scripts/load-secrets-from-store.sh` as the starting point.
+
+Recommended project placement:
+
+```text
+scripts/load-secrets-from-store.sh
+```
+
+Recommended local workflow:
+
+```bash
+# Load secrets into the current shell for local development
+source scripts/load-secrets-from-store.sh .env.secretstore
+
+# Then run the app/tests in that same shell
+npm run dev
+# or
+python -m pytest
+```
+
+Recommended `.env.secretstore` mapping file format:
+
+```dotenv
+# One mapping per local env var. Values are secret-store references, not secrets.
+# 1Password references are preferred when op is available.
+OPENAI_API_KEY=op://NoEgoDev/my-project-staging/OPENAI_API_KEY
+STRIPE_SECRET_KEY=op://NoEgoDev/my-project-staging/STRIPE_SECRET_KEY
+
+# macOS Keychain fallback: keychain://<service>/<account>
+GODADDY_API_KEY=keychain://my-project-staging/GODADDY_API_KEY
+GODADDY_API_SECRET=keychain://my-project-staging/GODADDY_API_SECRET
+```
+
+The loader must:
+
+- fail fast when the mapping file is missing, malformed, or references an unsupported store;
+- export variables into the caller's shell when sourced;
+- avoid printing secret values;
+- verify required commands such as `op` or `security` before attempting reads;
+- keep the mapping file safe to commit only if it contains references and no raw secret values. If in doubt, add the project-specific mapping file to `.gitignore` and commit `.env.secretstore.example` instead.
+
+### Creating and Storing New API Keys
+
+When the user or provider requires a new API key:
+
+1. Define the minimum scope needed for the service and environment.
+2. Ask the user to create the key in the provider UI or use an authenticated CLI/API when available.
+3. Store the key directly in the chosen secret store, under the agreed project/environment path. Avoid routing raw values through chat.
+4. Add or update `.env.example` and `.env.secretstore.example` with the variable name and store reference pattern only.
+5. Add the corresponding CI/provider encrypted secret by reading from the store or by having the user paste directly into the provider's secret UI.
+6. Verify with a harmless command (`whoami`, project list, test API call) while masking output.
+7. Document the secret name, store path, scope, owner, consumers, and rotation instructions in the deployment/monitoring runbook.
+
 ## Deployment and Monitoring Documentation
 
 For each project, maintain a durable deployment and system monitoring document under `.projects/<project>/runbooks/`, preferably `.projects/<project>/runbooks/deployment-and-monitoring.md`.
@@ -194,7 +268,7 @@ Required contents:
 
 - **Environment inventory**: staging and production URLs, provider/project/service names, regions, branches/tags that deploy, and owner/contact.
 - **Deployment flow**: PR checks, staging auto-deploy trigger, production deploy trigger/approval, migration steps, smoke tests, and rollback steps.
-- **Secrets and config**: required environment variables and secret names by environment, with no secret values committed.
+- **Secrets and config**: required environment variables and secret names by environment, secret-store references/paths, loader-script usage, CI/provider secret consumers, rotation notes, and no secret values committed.
 - **System health**: health check endpoints, uptime checks, background job checks, database/storage checks, and expected healthy signals.
 - **Monitoring and alerting**: log locations, dashboards, error tracking, alert destinations/escalation path, and key metrics/SLOs for the MVP.
 - **Operational procedures**: how to inspect logs, restart/redeploy services, run migrations safely, verify staging, verify production, and handle incidents.
@@ -208,13 +282,14 @@ Prefer one concise, current runbook over scattered notes. If a provider generate
 3. Prefer CLI/API access for hosting/DNS/cloud providers; guide the user step by step through login or scoped API-key creation so the rest of the setup can be completed via chat.
 4. Verify granted access immediately with CLI/API checks, then proceed without repeated permission prompts unless a new external system or stronger permission is genuinely required.
 5. Add the smallest CI workflow that blocks broken code.
-6. Configure separate staging and production environments, including separate secrets/env var namespaces.
-7. Add deployment automation that auto-deploys staging after CI passes on the integration branch.
-8. Add a safe production deployment path with an explicit approval/tag/manual trigger unless the user asks for fully automatic production deploys.
-9. Document required secrets as names only; never commit secret values.
-10. Create or update the per-project deployment and system monitoring runbook at `.projects/<project>/runbooks/deployment-and-monitoring.md`.
-11. Add health checks and operational runbook details.
-12. Verify by running CI locally where possible, checking staging deployment status, and confirming the production deploy path and monitoring setup are documented.
+6. Choose a secret store for API keys and credentials before creating or requesting keys. Add a store-backed local loader script from `skills/devops/scripts/load-secrets-from-store.sh` and commit only safe examples/references, not secret values.
+7. Configure separate staging and production environments, including separate secrets/env var namespaces and separate store paths/items.
+8. Add deployment automation that auto-deploys staging after CI passes on the integration branch.
+9. Add a safe production deployment path with an explicit approval/tag/manual trigger unless the user asks for fully automatic production deploys.
+10. Document required secrets as names and store references/paths only; never commit secret values.
+11. Create or update the per-project deployment and system monitoring runbook at `.projects/<project>/runbooks/deployment-and-monitoring.md`.
+12. Add health checks and operational runbook details.
+13. Verify by running CI locally where possible, checking staging deployment status, testing store-backed secret loading without printing values, and confirming the production deploy path and monitoring setup are documented.
 
 ## Verification Checklist
 
@@ -228,6 +303,9 @@ Prefer one concise, current runbook over scattered notes. If a provider generate
 - [ ] Staging auto-deploys from the integration branch after CI passes.
 - [ ] Production deploy is protected by manual approval, release tag, protected branch, or documented explicit command.
 - [ ] Environment variables/secrets are separated by environment and documented by name only.
+- [ ] API keys and credentials are stored in a secret store rather than source files, chat, shell history, or committed `.env` files.
+- [ ] A local loader script exists (for example `scripts/load-secrets-from-store.sh`) and loads secrets from the store without printing values.
+- [ ] `.env.example` / `.env.secretstore.example` document variable names and store references only, with no raw secret values.
 - [ ] Per-project deployment and system monitoring doc exists at `.projects/<project>/runbooks/deployment-and-monitoring.md` or an equivalent documented path.
 - [ ] The deployment/monitoring doc includes environment inventory, deployment triggers, rollback, health checks, logs, dashboards/alerts, and operational procedures.
 - [ ] Secrets are documented but not committed.

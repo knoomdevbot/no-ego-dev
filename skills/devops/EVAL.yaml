@@ -16,6 +16,9 @@ expectations:
   - "protects production deploy with approval, tag, protected branch, or explicit command"
   - "maintains a per-project deployment and system monitoring document"
   - "documents environment inventory, deployment flow, secrets by name, health checks, logs, dashboards or alerts, rollback, and operational procedures"
+  - "stores API keys and credentials in a secret store rather than committed env files or chat"
+  - "adds or references a local loader script that loads secrets from the store into the local environment without printing secret values"
+  - "documents secret-store paths or references, rotation notes, and CI or provider secret consumers without exposing raw secret values"
 setupCommands: []
 teardownCommands: []
 parameters:
