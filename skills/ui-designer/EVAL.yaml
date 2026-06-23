@@ -1,8 +1,10 @@
 prompt: |
-  Use the ui-designer skill for a realistic web app project that needs a UI guideline and a design review of implemented screens.
+  Use the ui-designer skill for realistic web and mobile app projects that need UI guidelines and design reviews of implemented screens. Include a mobile app review case where layout must be small-screen focused and navigation must work by touch/one-finger browsing.
 expectations:
   - "creates or updates a durable UI guideline artifact"
   - "UI guideline covers layout, visual language, components or states, accessibility basics, and copy tone"
+  - "distinguishes mobile app UX review from web app UX review when the product is mobile or mobile-first"
+  - "mobile review checks simple focused screens, touch target size, thumb reach zones, one-finger navigation, and native mobile navigation patterns"
   - "reviews real or specified implemented UI against the UI guideline"
   - "captures or requests screenshot/evidence for UI findings"
   - "separates guideline violations from subjective preferences"

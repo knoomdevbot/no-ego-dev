@@ -1,6 +1,16 @@
 # UI Designer Eval Fixture
 
-This fixture describes a typical NoEgoDev project scenario for evaluating the `ui-designer` skill.
+This fixture describes typical NoEgoDev project scenarios for evaluating the `ui-designer` skill.
+
+Client also asks NED to review a mobile app onboarding and dashboard flow. A passing `ui-designer` response should:
+
+- State that mobile app UX must be reviewed differently from web app UX.
+- Check that each phone screen is simple and focused around one primary job.
+- Evaluate touch target size, spacing, thumb reach, safe areas, and keyboard/OS chrome interactions.
+- Prefer one-finger navigation and native mobile patterns such as bottom tabs, bottom sheets, clear back behavior, and step-by-step flows.
+- Flag dense web-style layouts, sidebars, hover menus, and top-heavy navigation as mobile-specific UX issues when they harm use.
+- Separate mobile-specific findings from general visual polish findings.
+
 
 Project: AtlasBoard, a lightweight B2B dashboard for founders to track product launches.
 

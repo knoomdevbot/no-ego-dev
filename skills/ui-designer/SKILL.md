@@ -35,15 +35,34 @@ Create or update the UI guideline when a project is new, when no guideline exist
 A useful guideline should be specific enough that a coder or QA agent can apply it without guessing. Include:
 
 - Product context: target user, core user journey, product tone, and primary jobs-to-be-done.
-- Layout principles: page structure, spacing rhythm, content density, responsive breakpoints, navigation, and hierarchy.
+- Layout principles: page structure, spacing rhythm, content density, responsive breakpoints, navigation, and hierarchy. For mobile apps, explicitly define small-screen focus, one-primary-job-per-screen expectations, reach zones, and touch-first navigation.
 - Visual language: typography, color roles, contrast expectations, elevation/borders, icons, imagery, and motion restraint.
-- Components and states: buttons, forms, inputs, tables/lists, cards, modals, empty/loading/error/success states, toasts, and destructive actions.
+- Components and states: buttons, forms, inputs, tables/lists, cards, modals, empty/loading/error/success states, toasts, and destructive actions. For mobile apps, include native mobile patterns such as bottom tabs, bottom sheets, safe-area handling, keyboard overlays, permission states, and offline/interrupted-session states.
 - Accessibility basics: keyboard reachability, focus states, visible labels, contrast, target sizes, reduced-motion concerns, and semantic headings where applicable.
 - Copy and microcopy: tone, button labels, empty-state copy, error messages, confirmation text, and formatting conventions.
 - Do / don't examples when helpful.
 - Open questions and intentionally deferred design decisions.
 
 Do not invent a massive design system when the project needs a small MVP. Start with the smallest durable guideline that prevents inconsistent implementation.
+
+## Mobile App UX Review Rules
+
+Review mobile app UX differently from web app UX. A phone screen is small, held in the hand, and operated primarily by touch; evaluate whether each screen is simple, focused, reachable, and one-finger friendly rather than applying desktop/web layout expectations.
+
+When the product is a mobile app or mobile-first flow, explicitly check:
+
+- **Focused layout:** each screen should have one primary job. Avoid dense dashboards, multi-column layouts, persistent sidebars, and “show everything” web patterns on the small screen.
+- **Small-screen hierarchy:** the primary action, current state, and next step should be understandable at a glance. Prefer progressive disclosure over exposing every option at once.
+- **Touch-first controls:** interactive targets should be comfortably tappable, generally 44px or larger, with enough spacing to prevent mis-taps.
+- **One-finger navigation:** core browsing and primary flows should work with one thumb/finger. Do not rely on hover, keyboard shortcuts, precise cursor behavior, or two-handed reach for routine actions.
+- **Reach zones:** frequent actions should sit in comfortable thumb reach. Top corners are acceptable for lower-frequency or platform-standard actions, not high-frequency primary controls.
+- **Mobile navigation model:** prefer native/mobile patterns such as bottom tabs, bottom sheets, clear back behavior, swipeable surfaces, and short step-by-step flows. Do not import desktop navigation such as hover menus, tiny breadcrumbs, deep top nav, or persistent left nav without a strong mobile-specific reason.
+- **Screen transitions and orientation:** users should always know where they are and how to get back across pushes, modals, sheets, and tabs.
+- **Input burden:** minimize typing and precise selection. Prefer defaults, pickers, saved values, scanning, and shorter staged forms.
+- **Viewport realities:** account for safe areas, notches, status bars, tab bars, keyboard overlays, and scroll position. Critical actions must not hide behind the keyboard or OS chrome.
+- **Mobile resilience states:** review loading, empty, offline/poor-network, permission-denied, error, success, interrupted-session, and resume states because mobile use is fragmented.
+
+When reporting findings, label mobile-specific issues separately from general visual design issues. Frame fixes as mobile interaction changes, e.g. “collapse this into one primary action plus secondary overflow,” “move the frequent action into the bottom bar,” or “split this dense web-style screen into a two-step mobile flow.”
 
 ## Reviewing UI Against the Guideline
 
@@ -121,6 +140,7 @@ Related PRD/spec/issues:
 - Target user:
 - Primary journey:
 - Product tone:
+- Platform mode: web app | mobile app | responsive web
 
 ## Design Principles
 1.
@@ -128,9 +148,10 @@ Related PRD/spec/issues:
 3.
 
 ## Layout and Responsive Rules
-- Page shell/navigation:
+- Page/screen shell/navigation:
 - Spacing/content density:
-- Breakpoints:
+- Breakpoints or device classes:
+- Mobile app rules, if applicable: one-primary-job-per-screen, thumb reach zones, bottom navigation/sheets, safe areas, keyboard overlays, and one-finger browsing expectations.
 
 ## Visual Language
 - Typography:
