@@ -1,9 +1,15 @@
 prompt: |
-  Use the product-manager skill to respond to a realistic client/project request.
+  Use the product-manager skill to respond to a realistic client/project request for a user-facing product that needs a PRD and a way to learn from user feedback after launch.
 expectations:
   - "mentions durable artifact"
   - "includes verification"
   - "avoids vague next steps"
+  - "adds a way for users to submit feedback"
+  - "defines daily feedback review cadence, owner, channels, and recording destination"
+  - "treats bug reports as defects to verify or route to QA/issue triage"
+  - "does not take non-bug feedback literally and instead identifies user context, underlying problem, and simplest solution"
+  - "does not react to random one-off feedback unless it aligns with core product value or reveals a bug or risk"
+  - "acts on repeated feedback patterns when more than a few users report the same underlying problem"
 setupCommands: []
 teardownCommands: []
 parameters:

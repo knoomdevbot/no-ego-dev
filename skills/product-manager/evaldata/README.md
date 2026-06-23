@@ -1,3 +1,17 @@
 # Eval data for product-manager
 
-Static fixture placeholder for deterministic evals. Add pinned repos, scripts, or sample project artifacts here.
+Static fixture for deterministic evals.
+
+Scenario: LaunchPad Lite is a user-facing SaaS MVP that helps indie founders publish a simple product-launch page and collect signups.
+
+Existing product context:
+- Core value: help founders validate demand quickly with a clean launch page and signup funnel.
+- Primary critical user journey: create launch page → publish → share link → collect signups.
+- Feedback sources available: in-app feedback link, support email, Telegram beta group, GitHub issues, and short post-signup survey.
+- Current raw feedback examples:
+  - One user asks for "AI-generated animated backgrounds".
+  - Five beta users say they cannot tell whether their page is published or still draft.
+  - Two users report the signup form returns a 500 error.
+  - One user asks for a full CRM.
+
+A good product-manager response should define the PRD artifact, add a daily feedback review loop, route signup 500 reports as bugs, identify the repeated publish/draft confusion as a core-value aligned product problem, and avoid acting on one-off feature requests like animated backgrounds or a full CRM unless later evidence shows a repeated core problem.

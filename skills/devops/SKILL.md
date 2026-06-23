@@ -23,8 +23,8 @@ Make the product shippable and observable. NED devops chooses boring, reliable a
 - Automatic deployment to staging from the integration branch after CI passes.
 - Environment variable and secret handling.
 - Preview/staging/production environment strategy.
-- Monitoring, logs, health checks, and rollback plan.
-- Per-project deployment and system monitoring documentation.
+- Monitoring, logs, health checks, hosting-cost visibility, and rollback plan.
+- Per-project deployment and system monitoring documentation, including routine cost checks for hosted resources.
 
 ## Access and Tooling Prerequisites
 
@@ -270,10 +270,23 @@ Required contents:
 - **Deployment flow**: PR checks, staging auto-deploy trigger, production deploy trigger/approval, migration steps, smoke tests, and rollback steps.
 - **Secrets and config**: required environment variables and secret names by environment, secret-store references/paths, loader-script usage, CI/provider secret consumers, rotation notes, and no secret values committed.
 - **System health**: health check endpoints, uptime checks, background job checks, database/storage checks, and expected healthy signals.
+- **Hosting cost**: current hosting/cloud/provider spend, plan limits, usage drivers, upcoming renewals/trials, forecasted monthly run-rate, budget owner, and cost anomalies that need product or devops action.
 - **Monitoring and alerting**: log locations, dashboards, error tracking, alert destinations/escalation path, and key metrics/SLOs for the MVP.
 - **Operational procedures**: how to inspect logs, restart/redeploy services, run migrations safely, verify staging, verify production, and handle incidents.
 
 Prefer one concise, current runbook over scattered notes. If a provider generates its own docs or dashboard links, link them from the runbook and summarize the operational steps in-repo.
+
+## Periodic System Checkup Cost Rules
+
+Every periodic system checkup must include hosting cost as a first-class signal, not an afterthought. For each staging and production environment, inspect available billing/usage dashboards or provider APIs/CLIs and report:
+
+- current billing period spend and projected monthly run-rate;
+- hosting plan/tier, seats, add-ons, database/storage/egress/queue/cron/job costs, and trial or renewal dates;
+- resource usage that can create surprise bills: traffic, bandwidth/egress, storage growth, logs retention, background jobs, build minutes, serverless invocations, managed database compute, and third-party API quotas;
+- cost anomalies since the last checkup, including sudden spikes, unused resources, idle preview environments, forgotten services, or over-provisioned instances;
+- recommended action: leave as-is, downgrade/resize, delete idle resources, add budget alerts, create an optimization task, or ask product/project manager for a cost-vs-growth decision.
+
+If cost data is unavailable, mark it as `missing cost visibility`, identify the provider/account/dashboard or API access needed, and create a setup task for budget alerts or billing access. Never claim a system is fully healthy when hosting cost cannot be checked for a live product.
 
 ## Workflow
 
@@ -288,8 +301,8 @@ Prefer one concise, current runbook over scattered notes. If a provider generate
 9. Add a safe production deployment path with an explicit approval/tag/manual trigger unless the user asks for fully automatic production deploys.
 10. Document required secrets as names and store references/paths only; never commit secret values.
 11. Create or update the per-project deployment and system monitoring runbook at `.projects/<project>/runbooks/deployment-and-monitoring.md`.
-12. Add health checks and operational runbook details.
-13. Verify by running CI locally where possible, checking staging deployment status, testing store-backed secret loading without printing values, and confirming the production deploy path and monitoring setup are documented.
+12. Add health checks, hosting-cost visibility, budget-alert expectations, and operational runbook details.
+13. Verify by running CI locally where possible, checking staging deployment status, testing store-backed secret loading without printing values, and confirming the production deploy path, monitoring setup, and cost-check sources are documented.
 
 ## Verification Checklist
 
@@ -307,7 +320,8 @@ Prefer one concise, current runbook over scattered notes. If a provider generate
 - [ ] A local loader script exists (for example `scripts/load-secrets-from-store.sh`) and loads secrets from the store without printing values.
 - [ ] `.env.example` / `.env.secretstore.example` document variable names and store references only, with no raw secret values.
 - [ ] Per-project deployment and system monitoring doc exists at `.projects/<project>/runbooks/deployment-and-monitoring.md` or an equivalent documented path.
-- [ ] The deployment/monitoring doc includes environment inventory, deployment triggers, rollback, health checks, logs, dashboards/alerts, and operational procedures.
+- [ ] The deployment/monitoring doc includes environment inventory, deployment triggers, rollback, health checks, hosting cost/budget visibility, logs, dashboards/alerts, and operational procedures.
+- [ ] Periodic system checkups include current hosting spend, projected run-rate, plan limits, resource-usage cost drivers, renewal/trial dates, and cost anomalies or missing-cost-visibility tasks.
 - [ ] Secrets are documented but not committed.
 - [ ] Deploy path is reproducible.
 - [ ] Health/rollback docs exist.

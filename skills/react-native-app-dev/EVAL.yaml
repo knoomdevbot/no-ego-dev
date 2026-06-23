@@ -1,0 +1,14 @@
+prompt: |
+  Use the react-native-app-dev skill to plan or execute a realistic React Native mobile app feature or setup task.
+expectations:
+  - "requires PRD tech spec and UI guideline or feature UI brief before coding user-facing React Native UI"
+  - "identifies Expo versus React Native CLI or bare workflow and preserves the existing package manager lockfile"
+  - "includes Android Studio and Android SDK setup or verification for Android testing"
+  - "checks ANDROID_HOME ANDROID_SDK_ROOT JAVA_HOME adb sdkmanager emulator or AVD setup when environment setup is in scope"
+  - "maps acceptance criteria and UI states to React Native components hooks services tests or native config changes"
+  - "requires Android emulator or device evidence for Android UI or native work, or creates an explicit QA follow-up if blocked"
+  - "mentions relevant checks such as typecheck lint tests Expo doctor React Native doctor run-android or Gradle assemble/lint"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

@@ -1,0 +1,13 @@
+prompt: |
+  Use the android-app-dev skill to plan or execute a realistic Android app feature.
+expectations:
+  - "requires PRD issue tech spec and UI guideline or feature UI brief before coding user-facing UI"
+  - "blocks or creates a UI design follow-up when a UI-bearing feature lacks design artifacts"
+  - "maps PRD acceptance criteria and UI states to Android implementation tasks"
+  - "mentions relevant Android checks such as Gradle tests lint assemble or connected tests"
+  - "requires emulator device preview screenshot or QA follow-up evidence for UI-bearing work"
+  - "considers Android accessibility lifecycle resources and release constraints when relevant"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

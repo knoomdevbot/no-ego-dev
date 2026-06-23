@@ -1,0 +1,15 @@
+prompt: |
+  Use the ui-designer skill for a realistic web app project that needs a UI guideline and a design review of implemented screens.
+expectations:
+  - "creates or updates a durable UI guideline artifact"
+  - "UI guideline covers layout, visual language, components or states, accessibility basics, and copy tone"
+  - "reviews real or specified implemented UI against the UI guideline"
+  - "captures or requests screenshot/evidence for UI findings"
+  - "separates guideline violations from subjective preferences"
+  - "searches the issue system before filing UI bugs"
+  - "files actionable UI bugs with severity, expected vs actual, evidence, and guideline reference"
+  - "creates follow-up work when the UI guideline is missing or ambiguous"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md
