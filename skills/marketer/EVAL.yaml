@@ -1,0 +1,22 @@
+prompt: |
+  Use the marketer skill to respond to this realistic project request:
+
+  "We are launching a new mobile app called FocusNest. It helps remote software engineers protect two deep-work blocks per day by syncing calendar events, Slack status, and gentle lock-screen nudges. We have a landing page, a working iOS TestFlight build, an Android internal test build, and want to publish to both app stores soon. Create the launch plan and app-store publishing plan we should execute without being spammy. We need to know which channels to use, how to introduce it sincerely to likely users, what assets to prepare, how to measure launch response, and what to do if app-store review or launch feedback reveals issues."
+expectations:
+  - "creates or names durable marketing artifacts such as launch plan channel map outreach log app store submission checklist and post launch report"
+  - "states target users pain value proposition CTA honest limitations and launch readiness gates"
+  - "selects and justifies multiple channels including owned landing page email waitlist founder led direct outreach Product Hunt or launch communities Reddit or HN where appropriate LinkedIn or social content SEO/content and paid channels only after signal"
+  - "gives sincere non spammy introduction guidance with tailored outreach or community post examples that disclose the builder relationship ask for feedback not blind upvotes and respect community rules"
+  - "includes channel specific norms for Product Hunt Hacker News Reddit LinkedIn short form video or creator/newsletter outreach rather than using one generic blast"
+  - "uses people first content/SEO guidance with concrete content assets such as tutorials comparisons templates checklists or case studies"
+  - "covers permission based email/waitlist follow up and opt out/legal basics"
+  - "documents Apple App Store submission steps including Apple Developer/App Store Connect access app record build upload TestFlight screenshots/metadata app privacy review submission release mode and common rejection risks"
+  - "documents Google Play submission steps including Play Console access app creation app bundle/signing testing tracks store listing assets Data safety/content declarations review submission staged rollout and common policy risks"
+  - "includes App Store Optimization guidance for screenshots first frames descriptions keywords/localization custom product pages or listing experiments"
+  - "defines measurement and post launch operating loop with source tracking traffic installs signups activation feedback reviews crashes app store status and issue creation for blockers"
+  - "coordinates with project manager product devops qa ui/app development where needed and does not pretend marketing alone can fix product readiness or store compliance"
+  - "avoids fake engagement astroturfing scraped bulk spam deceptive claims and unsupported superlatives"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md
