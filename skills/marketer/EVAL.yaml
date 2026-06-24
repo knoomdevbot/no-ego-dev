@@ -13,6 +13,8 @@ expectations:
   - "documents Apple App Store submission steps including Apple Developer/App Store Connect access app record build upload TestFlight screenshots/metadata app privacy review submission release mode and common rejection risks"
   - "documents Google Play submission steps including Play Console access app creation app bundle/signing testing tracks store listing assets Data safety/content declarations review submission staged rollout and common policy risks"
   - "includes App Store Optimization guidance for screenshots first frames descriptions keywords/localization custom product pages or listing experiments"
+  - "creates or names a Google Play country localization worksheet and explains how to tailor Play Store listings by country language local search phrasing screenshots pricing trust/compliance notes and experiments"
+  - "does not treat Play Store localization as literal translation or reuse one global English listing for all countries"
   - "defines measurement and post launch operating loop with source tracking traffic installs signups activation feedback reviews crashes app store status and issue creation for blockers"
   - "coordinates with project manager product devops qa ui/app development where needed and does not pretend marketing alone can fix product readiness or store compliance"
   - "avoids fake engagement astroturfing scraped bulk spam deceptive claims and unsupported superlatives"

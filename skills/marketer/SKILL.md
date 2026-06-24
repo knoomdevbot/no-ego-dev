@@ -39,6 +39,7 @@ Prefer project-local artifacts so future project, product, devops, and QA agents
 - Outreach tracker: `.projects/<project>/marketing/outreach-log.md`
 - Messaging/positioning: `.projects/<project>/marketing/positioning.md`
 - App-store submission checklist: `.projects/<project>/marketing/app-store-submission.md`
+- Google Play country/localization worksheet: `.projects/<project>/marketing/play-store-localization.md`
 - Post-launch report: `.projects/<project>/marketing/post-launch-report.md`
 
 If the project already has a stronger convention, follow it and mention the path used.
@@ -165,10 +166,11 @@ When the user asks for a launch or publishing plan, the marketer response must e
 7. **Email/waitlist** — permission-based follow-up, segmentation, launch CTA, useful updates, unsubscribe/opt-out, and non-deceptive sender/subject/legal basics.
 8. **Apple App Store steps** — Apple Developer/App Store Connect access, app record, signed build upload, TestFlight, screenshots/metadata, app privacy/privacy manifests, review notes/demo credentials, submission, release mode, and common rejection risks.
 9. **Google Play steps** — Play Console access, app creation, Android App Bundle/signing/versioning, internal/closed/open testing tracks, store listing assets, Data safety/content declarations, review submission, staged rollout, and common policy risks.
-10. **ASO** — screenshots and first frames, app previews/videos, descriptions, keywords/search language, localization, custom product pages or store-listing experiments, and review/rating loop.
-11. **Measurement and operating loop** — UTMs/source tags, traffic, installs, signups, activation, feedback themes, reviews, crashes, app-store status, daily launch review, and issue creation for blockers.
-12. **Cross-functional coordination** — state what project manager, product manager, devops, QA, UI designer, iOS/Android/app-development agents must verify; do not imply marketing can fix store compliance or product readiness alone.
-13. **Trust boundary** — explicitly avoid fake engagement, astroturfing, scraped bulk spam, deceptive claims, unsupported superlatives, and upvote begging.
+10. **ASO and Google Play listing quality** — screenshots and first frames, app previews/videos, descriptions, keywords/search language, localization, custom product pages or store-listing experiments, and review/rating loop. For Google Play country rollouts, create or update `.projects/<project>/marketing/play-store-localization.md` and use `references/google-play-listing-localization.md`.
+11. **Country-specific Play Store listing plan** — for each target country/Play country, state listing language(s), local user pain wording, search phrases, competitors, localized screenshots/feature graphic/video needs, trust/compliance/pricing notes, launch channels, and experiment/measurement plan. Do not treat localization as literal translation or reuse one English listing globally.
+12. **Measurement and operating loop** — UTMs/source tags, traffic, installs, signups, activation, feedback themes, reviews, crashes, app-store status, daily launch review, and issue creation for blockers.
+13. **Cross-functional coordination** — state what project manager, product manager, devops, QA, UI designer, iOS/Android/app-development agents must verify; do not imply marketing can fix store compliance or product readiness alone.
+14. **Trust boundary** — explicitly avoid fake engagement, astroturfing, scraped bulk spam, deceptive claims, unsupported superlatives, and upvote begging.
 
 ## Launch Plan Template
 
@@ -223,6 +225,21 @@ Product URL/app-store URL:
 ## App Store Optimization and Mobile Launch
 
 Mobile launch marketing starts before submission. The app-store listing is both a compliance artifact and a conversion surface.
+
+### Google Play listing localization by country
+
+When a Google Play app targets multiple countries, create `.projects/<project>/marketing/play-store-localization.md` and use the detailed playbook in `references/google-play-listing-localization.md`.
+
+Key rules:
+
+- Optimize by target **country/Play country** and language, not by “global English.” Google Play country targeting is based on the user's Play country, so distribution, pricing, testing tracks, and listing assumptions should match that country plan.
+- For each target country, research local search phrasing, competitor listings, reviews, local acquisition channels, price/currency expectations, privacy/trust objections, and screenshot conventions.
+- Localize the promise, screenshots, feature graphic, video captions, examples, support language, and first paragraph of the description. Do not merely machine-translate English copy.
+- Keep Google Play metadata clean: unique accessible title, concise 80-character short description, benefit-led full description, no keyword stuffing, excessive emoji/ASCII, misleading ranking/price claims, or repeated irrelevant terms.
+- Use country/language-specific experiments when traffic allows. Test one meaningful hypothesis at a time, such as first screenshot value prop, short description, or feature graphic.
+- Convert country-specific reviews/support objections into product, onboarding, localization, or listing issues.
+
+For every country row, capture: `Country / Play country`, `Listing language(s)`, `Local user/job`, `Local pain wording`, `Search phrases`, `Competitors`, `Screenshots/feature graphic/video to localize`, `Trust/compliance notes`, `Price/currency notes`, `Launch channels`, and `Experiment/measurement plan`.
 
 ### Apple App Store listing guidance
 
