@@ -15,7 +15,7 @@ metadata:
 
 Operate the project loop. Break work into objectively verifiable milestones, create issue-managed tasks, kick off subagents, inspect completion evidence, and create follow-up work when reality diverges from the plan.
 
-The project manager also owns the routine service status loop for live projects: schedule recurring checkups, gather product-side and devops-side updates, summarize health for the user at least once per day, and convert findings into prioritized issue-managed work.
+The project manager also owns the routine service status loop for live projects: schedule recurring checkups, gather product-side and devops-side updates, summarize health for the user at least once per day, send periodic status-report emails when configured, and convert findings into prioritized issue-managed work.
 
 ## Milestone Rules
 
@@ -113,7 +113,7 @@ UI design task — <project/feature>
 
 ## Routine Service Status and Product Checkup Rules
 
-Set up routine service status checkups for any project that is deployed, user-facing, or expected to keep running after the initial build. The project manager owns the combined daily rollup: pull product-side updates, pull devops-side updates, summarize service status to the user, and create issue-managed follow-up work. Do not wait for the user to ask for monitoring once a product is live.
+Set up routine service status checkups for any project that is deployed, user-facing, or expected to keep running after the initial build. The project manager owns the combined rollup: pull product-side updates, pull devops-side updates, summarize service status to the user, send periodic email reports to the configured recipient, and create issue-managed follow-up work. Do not wait for the user to ask for monitoring once a product is live.
 
 ### When to create the checkup
 
@@ -122,9 +122,29 @@ Set up routine service status checkups for any project that is deployed, user-fa
 - When inheriting an existing live project that does not already have a documented checkup cadence.
 - After a major feature launch, pricing/billing change, onboarding change, or traffic-source experiment.
 
-Use the available durable scheduler for the environment (Hermes cron, GitHub Actions schedule, external monitor, or the project's existing scheduler). Prefer Hermes cron when the checkup requires agent reasoning across multiple signals and user-facing summary delivery.
+Use the available durable scheduler for the environment (Hermes cron, GitHub Actions schedule, external monitor, or the project's existing scheduler). Prefer Hermes cron when the checkup requires agent reasoning across multiple signals and user-facing summary or email delivery.
 
-Default cadence: send the user a service status summary at least once per day for every active live project. During the first week after launch, incidents, high-risk releases, or unexplained metric/feedback changes, keep the underlying checks daily or more frequent. Only reduce deeper product-analysis cadence after the product is stable, but do not drop the daily user-facing status summary unless the user explicitly changes the cadence.
+Default cadence: send the user a service status summary at least once per day for every active live project. Also send a periodic status-report email when `status_report_email` and `status_report_cadence` are known for the project. During the first week after launch, incidents, high-risk releases, or unexplained metric/feedback changes, keep the underlying checks daily or more frequent. Only reduce deeper product-analysis cadence after the product is stable, but do not drop the daily user-facing status summary unless the user explicitly changes the cadence.
+
+### Email report configuration
+
+Every live project should have an explicit status-report email configuration recorded in the project runbook, PRD operations section, or issue tracker:
+
+```yaml
+status_report_email: <recipient@example.com>
+status_report_cadence: <daily | weekly | cron expression | explicit schedule>
+status_report_timezone: <timezone>
+```
+
+If either the recipient email or cadence is missing, proactively ask the user before scheduling the email report:
+
+```text
+I can send periodic service status report emails for <project>. What recipient email should receive them, and how often should I send them? Default recommendation: weekly for stable products, daily during launch/incidents, in <timezone>.
+```
+
+Do not invent an email address or cadence. If the user does not answer, keep the in-chat daily service summary running and create a follow-up task to configure email reporting.
+
+When configured, the recurring email job must gather the same product-side and devops-side signals as the service checkup, then send the report through the available email integration/tooling. The job prompt must include project name, repo/deploy URLs, dashboards, feedback channels, issue tracker, recipient email, cadence, timezone, and the report-length constraint.
 
 ### Checkup scope
 
@@ -155,13 +175,47 @@ Service status — <project> — <date/time + timezone>
 - Evidence: <dashboard links, logs, workflow URLs, billing/cost links, screenshots, queries>
 ```
 
+### Email status report format
+
+Periodic email reports are executive summaries, not raw logs. Keep each email short enough to fit within two pages (roughly 900 words or less; shorter is better). Use this shape:
+
+```text
+Subject: <Project> status report — <date range>
+
+Executive summary
+- <2-4 bullets: overall product health, whether the product is improving/holding/regressing, biggest risk, and what is being done next>
+
+Top-line metrics
+- Overall status: <healthy | watch | degraded | blocked>
+- Product performance: <active users/sessions/signups/conversion/retention/revenue or best available proxy, with trend>
+- Reliability: <uptime/error rate/latency/job health or best available proxy>
+- Delivery: <CI/deployment/release status>
+- Cost: <current run-rate/anomaly/missing visibility>
+
+How the product is doing
+- <traffic, activation, retention, funnel, revenue, feedback, adoption, and notable changes>
+
+Top key problems
+- Resolved: <highest-impact problems fixed during the period, issue links, evidence>
+- Being resolved: <active blockers/regressions/opportunities, owner, severity, ETA/next step>
+
+Decisions or help needed
+- <none or explicit ask>
+
+Evidence
+- <dashboard/log/workflow/billing/issue links; no excessive raw output>
+```
+
+If instrumentation is missing, say `missing instrumentation` in the relevant metric line and create/follow up on the setup issue. Do not pad the email with speculation.
+
 ### Follow-up rules
 
 - Create or update issues for regressions, failed CI, production health problems, missing instrumentation, repeated user complaints, funnel drops, and high-signal product opportunities.
 - Assign severity and owner for each issue. Distinguish incident/bug work from product-improvement work.
 - Escalate immediately instead of waiting for the next checkup when production is down, data loss/security risk is suspected, CI blocks urgent fixes, traffic drops sharply without explanation, or multiple users report the same critical failure.
-- Keep the checkup prompt self-contained: project name, repo path/URL, deployment environment, dashboards/analytics sources, support/feedback channels, devops runbook, billing/cost sources, issue tracker, report destination, and cadence.
+- Keep the checkup prompt self-contained: project name, repo path/URL, deployment environment, dashboards/analytics sources, support/feedback channels, devops runbook, billing/cost sources, issue tracker, in-chat report destination, email recipient/cadence/timezone when configured, and cadence.
 - The user-facing service status summary must be delivered at least once per day for active live projects and must include both product-side updates and devops-side updates, even when the only update is `no meaningful change` or `missing instrumentation`.
+- The email status report must include an executive summary, top-line metrics, how well the product is doing, top key problems already resolved, and top key problems currently being resolved. It must stay under two pages and link to evidence rather than dumping logs.
 
 ## Workflow
 
@@ -170,7 +224,7 @@ Service status — <project> — <date/time + timezone>
 3. For each PRD, decide whether the work needs UI. If yes, spawn a `ui-designer` subagent and create UI design tasks before tech-spec work. For new UI-bearing projects, write the project UI guideline after the core PRD is done and before architecture begins.
 4. Spawn an `architect` subagent to produce a tech spec tied to the current codebase and bootstrap the repo if needed. For UI-bearing work, require the tech spec to cite the UI guideline/brief and not invent conflicting UI behavior.
 5. Spawn a `devops` subagent to define/setup CI/CD, deployment, observability, and operational checks when appropriate.
-6. For a deployed/user-facing project, set up a routine service status check with a self-contained recurring prompt that pulls product-side updates (traffic and feedback) plus devops-side updates (CI/release, system health, and hosting cost) and sends the user a summary at least once per day.
+6. For a deployed/user-facing project, set up a routine service status check with a self-contained recurring prompt that pulls product-side updates (traffic and feedback) plus devops-side updates (CI/release, system health, and hosting cost) and sends the user a summary at least once per day. If email report recipient/cadence are configured, schedule periodic status-report emails too; if not, proactively ask the user for the recipient email and cadence and create a follow-up task until configured.
 7. Create milestones from the current PRD/spec/UI artifacts.
 8. Create issues/tasks in the chosen issue system, including UI design/design-review tasks when applicable.
 9. Send a progress update with the milestone/task plan before execution begins.
@@ -195,6 +249,9 @@ Service status — <project> — <date/time + timezone>
 - [ ] Deployed/user-facing projects have a routine service status check scheduled with cadence, destination, and self-contained prompt.
 - [ ] Service status checks pull product-side updates and devops-side updates, including CI status, system health, hosting cost, user traffic, and feedback from all known channels.
 - [ ] The user receives a service status summary at least once per day for active live projects unless they explicitly choose a different cadence.
+- [ ] Live projects have `status_report_email`, `status_report_cadence`, and timezone recorded, or the user was proactively asked for the missing email/cadence and a follow-up task exists.
+- [ ] Periodic email reports are scheduled when configured, sent through the available email integration, and include executive summary, top-line metrics, product performance, resolved problems, active problems, decisions needed, and evidence links.
+- [ ] Email reports stay under two pages and avoid raw log dumps.
 - [ ] Missing CI, health, analytics, or feedback instrumentation becomes explicit follow-up work instead of an assumed healthy status.
 - [ ] Progress updates were sent at phase start, phase completion, before subagent batches, and after subagent results.
 - [ ] Completed tasks have evidence.
@@ -203,3 +260,4 @@ Service status — <project> — <date/time + timezone>
 - [ ] Bugs were searched for duplicates before creation and triaged on creation.
 - [ ] Before milestone completion, all linked open bugs were fixed, closed as invalid/obsolete/won't-fix with rationale, or explicitly deferred without compromising milestone acceptance.
 - [ ] Follow-up tasks exist for discovered gaps.
+

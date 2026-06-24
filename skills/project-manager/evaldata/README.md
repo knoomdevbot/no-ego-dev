@@ -12,6 +12,8 @@ Client asks NED to build a new Android app with onboarding, a dashboard, and a f
 - Require a durable UI guideline, e.g. `.projects/<project>/design/ui-guidelines.md`, before the tech spec is finalized.
 - Require the later tech spec and implementation tasks to cite the UI guideline or feature UI brief.
 - Still include the periodic product checkup once the project is deployed/user-facing, covering CI status, system health, user traffic, and feedback channels.
+- If no status-report email recipient/cadence is provided, proactively ask which email should receive reports and how often to send them.
+- When email reporting is configured, require an executive-summary report under two pages with top-line metrics, how the product is doing, key problems resolved, key problems being resolved, decisions needed, and evidence links.
 
 ## Scenario: React Native app planning
 
@@ -21,4 +23,5 @@ Client asks NED to build a React Native app and test Android locally. A passing 
 - Delegate React Native app setup/implementation to `react-native-app-dev`.
 - Ensure the React Native task includes Android Studio, SDK, emulator/AVD, and environment variable setup or verification for Android testing.
 - Keep periodic product checkups and feedback loops in the plan for the deployed/user-facing app.
+- Configure periodic status-report emails if recipient/cadence are known; otherwise ask the user for the missing recipient email and cadence instead of guessing.
 

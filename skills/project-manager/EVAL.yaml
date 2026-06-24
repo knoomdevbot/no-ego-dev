@@ -16,6 +16,10 @@ expectations:
   - "sets up a routine service status check for deployed or user-facing projects"
   - "service status check pulls product side updates and devops updates including CI status system health hosting cost user traffic and user feedback from multiple channels"
   - "sends the user a service status summary at least once per day for active live projects unless explicitly configured otherwise"
+  - "proactively asks for status report email recipient and cadence when either is missing for a live project"
+  - "schedules periodic status report emails when recipient and cadence are configured"
+  - "email status reports include executive summary top-line metrics product performance key resolved problems key problems being resolved decisions needed and evidence links"
+  - "email status reports stay under two pages and avoid raw log dumps"
   - "creates follow-up issues for missing instrumentation missing cost visibility or unhealthy product/devops signals"
 setupCommands: []
 teardownCommands: []
