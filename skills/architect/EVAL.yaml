@@ -5,6 +5,9 @@ expectations:
   - "includes verification"
   - "avoids vague next steps"
   - "chooses or recommends the easiest-to-maintain viable hosting provider"
+  - "adds product metrics instrumentation for user-facing products tied to PRD success metrics and the critical user journey"
+  - "defines analytics events properties capture points dashboard or reporting path owner cadence and privacy constraints"
+  - "includes tests or QA checks for metrics firing correctly and not leaking private data"
   - "considers MVP cost when recommending hosting"
   - "asks the user to choose only when provider tradeoffs materially affect cost, architecture, compliance, or access"
 setupCommands: []

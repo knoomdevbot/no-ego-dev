@@ -13,7 +13,7 @@ metadata:
 
 ## Overview
 
-Translate product intent into a technical plan that a coder can implement safely. The architect reads the current codebase first, then writes specs grounded in reality.
+Translate product intent into a technical plan that a coder can implement safely. The architect reads the current codebase first, then writes specs grounded in reality. For user-facing products, the architecture must include a practical way to capture and review product metrics, not just ship features.
 
 ## Tech Spec Contents
 
@@ -23,8 +23,25 @@ Translate product intent into a technical plan that a coder can implement safely
 - Database schema or persistence changes.
 - Data flow and error handling.
 - Security, privacy, and operational concerns.
+- Product metrics instrumentation: analytics events, schemas/properties, capture points, dashboard/reporting path, retention/privacy constraints, and ownership.
 - Hosting/deployment provider options that support the required stack, including tradeoffs and a recommended default.
 - Test and rollout plan.
+
+## Product Metrics Instrumentation
+
+For any user-facing product or feature, include a minimal metrics architecture that lets the product manager and project manager tell whether the product is working after launch. Tie instrumentation to the PRD's value proposition, critical user journey, and success metrics.
+
+The tech spec must define:
+
+- Event/funnel capture points for activation, core CUJ completion, conversion/revenue when applicable, engagement/retention when repeated use matters, and feature-specific success metrics.
+- Event names and required properties, with privacy-safe user/session identifiers and no sensitive raw payloads.
+- Where events are emitted in the codebase: frontend interactions, backend API success/failure, background jobs, billing/webhook events, or integrations.
+- Storage/analytics destination: existing analytics tool, warehouse/table, logs-to-metrics pipeline, or a lightweight MVP dashboard. Prefer existing tooling unless the PRD requires a new analytics provider.
+- Dashboard/report path and review owner/cadence, coordinated with the product-manager metrics plan and project-manager status reporting.
+- Backfill/baseline strategy when launching into an existing product, and how missing instrumentation will be detected.
+- Tests or QA checks that prove metrics fire only once, fire on success/failure as intended, and do not leak private data.
+
+If the repo has no analytics foundation, choose the smallest viable instrumentation path for the product stage and create explicit implementation tasks. Do not leave metrics as a vague future concern.
 
 ## Hosting Provider Selection
 
@@ -74,15 +91,19 @@ Do not finalize provider-specific architecture, secrets, CI/CD, or deployment la
 1. Inspect the repository and existing project knowledge.
 2. Create retrospective specs for key components if missing.
 3. Choose the simplest sustainable architecture.
-4. Identify hosting/runtime requirements and choose or suggest the easiest-to-maintain compatible hosting provider, factoring in MVP cost.
-5. Ask the user to choose only when provider choice materially affects cost, architecture, compliance, or account access.
-6. Name every affected component and interface.
-7. Save the spec under `.projects/<project>/tech-specs/`.
+4. Add product-metrics instrumentation tied to the PRD success metrics and CUJ, including event capture points, analytics destination, dashboards/reports, privacy constraints, and tests.
+5. Identify hosting/runtime requirements and choose or suggest the easiest-to-maintain compatible hosting provider, factoring in MVP cost.
+6. Ask the user to choose only when provider choice materially affects cost, architecture, compliance, or account access.
+7. Name every affected component and interface.
+8. Save the spec under `.projects/<project>/tech-specs/`.
 
 ## Verification Checklist
 
 - [ ] Spec is grounded in current code.
 - [ ] Required hosting/runtime capabilities are identified.
+- [ ] User-facing products/features have a product-metrics instrumentation plan tied to the PRD success metrics and CUJ.
+- [ ] Event names/properties, capture points, analytics destination, dashboard/report path, and owner/cadence are explicit.
+- [ ] Metrics privacy constraints and tests/QA checks are included.
 - [ ] The recommended hosting provider is the easiest viable option to maintain for this product stage.
 - [ ] MVP cost expectations and provider tradeoffs are stated.
 - [ ] User is asked to choose only when provider choice materially affects cost, architecture, compliance, or account access.

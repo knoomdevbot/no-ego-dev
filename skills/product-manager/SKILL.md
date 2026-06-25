@@ -16,7 +16,7 @@ metadata:
 
 Turn a client request into a small, coherent product definition. Focus on why the feature matters, who uses it, the critical user journey, and conflicts with existing product behavior.
 
-Product management also owns the feedback-learning loop. Every PRD should include a practical way for users to submit feedback and a daily routine for checking that feedback while the project is active or newly launched.
+Product management also owns the learning loop. Every PRD should include a practical way for users to submit feedback, a daily routine for checking that feedback while the project is active or newly launched, and a concrete product-metrics plan so the team can tell whether the product is working.
 
 ## Core PRD for New Projects
 
@@ -27,6 +27,7 @@ Include:
 - Product type: online service, mobile app, chatbot, browser extension, internal tool, etc.
 - Target users and non-goals.
 - Success metrics and launch constraints.
+- Product metrics plan: activation, engagement, retention, conversion/revenue, and core-CUJ completion metrics or explicit reasons when a category is not applicable.
 - User feedback path: where users can submit feedback, who reviews it, and how it is linked to the issue/product planning system.
 - Daily feedback check: when feedback is reviewed, which channels are checked, and where findings/actions are recorded.
 
@@ -39,8 +40,25 @@ Include:
 - Interaction with existing features.
 - Conflicts, migrations, or edge cases.
 - Acceptance criteria that can be tested.
+- Feature metrics: the event(s), funnel step(s), or dashboard(s) that will show whether the feature improved the intended outcome.
 - How the feature will collect user feedback after release.
 - How daily feedback review will detect whether the feature is solving the intended problem.
+
+## Product Metrics Rules
+
+Always add a way to track product metrics for user-facing products and features. The PRD should define a minimal measurement plan that answers: are users reaching the core value, where are they dropping off, and is the product improving after changes?
+
+The PRD must specify:
+
+- North-star or primary success metric tied to the value proposition and critical user journey.
+- Activation metric: the earliest observable moment a user receives or approaches value.
+- Funnel/CUJ metrics: key steps from entry → setup/onboarding → core action → desired outcome.
+- Engagement/retention metric when repeated use matters; conversion/revenue metric when monetization or signup flow matters.
+- Event names/properties or analytics questions the architect/coder must instrument, using privacy-safe identifiers and avoiding sensitive payloads.
+- Dashboard/report destination and review cadence, e.g. `.projects/<project>/metrics/dashboard-plan.md`, analytics dashboard URL, or issue tracker report.
+- Baseline/current value when available, target/threshold when known, and what action to take when metrics regress.
+
+If metrics instrumentation does not exist yet, create a follow-up architecture/devops/coder task instead of pretending metrics are available. Keep the first metrics plan small; do not block MVPs on heavyweight analytics unless the product depends on it.
 
 ## User Feedback Loop Rules
 
@@ -100,15 +118,17 @@ Daily feedback review — <project> — <date/time + timezone>
 
 ## Workflow
 
-1. Read existing project knowledge, product docs, feedback logs, and relevant metrics.
+1. Read existing project knowledge, product docs, feedback logs, analytics dashboards, and relevant metrics.
 2. Ask only clarifying questions that materially change scope; otherwise state assumptions.
 3. Draft the smallest useful PRD.
-4. Add a feedback collection path and daily feedback check routine.
-5. If feedback already exists, classify it as bug report, core-value/product opportunity, repeated pattern, watchlist, or no-action.
-6. For non-bug feedback that deserves action, define the underlying user/problem and simplest solution instead of implementing the surface request.
-7. Check conflicts against existing features and the core product value.
-8. Save the PRD under `.projects/<project>/prds/`.
-9. Save or update feedback loop/log artifacts under `.projects/<project>/feedback/` unless the project has a stronger existing convention.
+4. Add a product metrics plan with key events/funnels, dashboard/report destination, review cadence, and instrumentation follow-up tasks if needed.
+5. Add a feedback collection path and daily feedback check routine.
+6. If feedback already exists, classify it as bug report, core-value/product opportunity, repeated pattern, watchlist, or no-action.
+7. For non-bug feedback that deserves action, define the underlying user/problem and simplest solution instead of implementing the surface request.
+8. Check conflicts against existing features and the core product value.
+9. Save the PRD under `.projects/<project>/prds/`.
+10. Save or update metrics plan artifacts under `.projects/<project>/metrics/` unless the project has a stronger existing convention.
+11. Save or update feedback loop/log artifacts under `.projects/<project>/feedback/` unless the project has a stronger existing convention.
 
 ## Verification Checklist
 
@@ -116,6 +136,10 @@ Before finishing, include a brief verification note that states what artifact wa
 
 - [ ] PRD has value proposition or user problem.
 - [ ] PRD has one primary CUJ.
+- [ ] PRD defines product metrics tied to the value proposition and CUJ.
+- [ ] Activation, funnel/CUJ, engagement/retention, and conversion/revenue metrics are included or explicitly marked not applicable.
+- [ ] Event names/properties, dashboard/report destination, review cadence, and regression action are specified.
+- [ ] Missing analytics/instrumentation becomes explicit follow-up work.
 - [ ] Acceptance criteria are objective.
 - [ ] Feature conflicts are addressed.
 - [ ] Feedback collection path exists for user-facing work.
