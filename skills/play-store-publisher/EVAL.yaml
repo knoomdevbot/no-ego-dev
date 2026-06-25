@@ -1,0 +1,16 @@
+prompt: |
+  Use the play-store-publisher skill for this realistic release request:
+
+  "We have an Expo Android app with a production AAB ready. EAS submit fails because no Google Play service account JSON is configured. Publish the first release through Play Console UI to internal testing, add westcool10@gmail.com as a tester, and tell me exactly what is published or blocked."
+expectations:
+  - "uses Google Play Console UI fallback when automated EAS submit is blocked by missing service account JSON"
+  - "verifies final package ID versionCode release AAB and build provenance before uploading"
+  - "creates or selects internal testing and explains that testers must be saved and selected before the release is useful"
+  - "uploads the AAB waits for Play processing adds release notes previews warnings and distinguishes draft uploaded from published rolled out"
+  - "does not claim testers or publishing succeeded unless Play Console state is verified after save or refresh"
+  - "captures opt-in link or exact blocker and writes a project-local Google Play publishing report/runbook"
+  - "hands off store listing copy ads localization build fixes or policy unknowns to the appropriate NoEgoDev skills"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

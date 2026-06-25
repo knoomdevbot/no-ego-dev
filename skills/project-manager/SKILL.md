@@ -53,10 +53,11 @@ The project manager orchestrates; it does not personally perform every specialis
 Always spawn focused subagents for tasks that require any major NoEgoDev skill/domain:
 
 - Product management / PRD / user story / scope decisions → spawn a subagent instructed to use `product-manager`.
-- Marketing / launch planning / channel strategy / sincere outreach / app-store listing or publishing coordination → spawn a subagent instructed to use `marketer`.
+- Marketing / launch planning / channel strategy / sincere outreach / app-store listing copy, ASO, localization, or ads → spawn a subagent instructed to use `marketer`.
+- Google Play Console UI publishing / AAB upload / internal testing / tester lists / rollout status → spawn a subagent instructed to use `play-store-publisher` when that skill is available; coordinate with `marketer` only for listing/ad/user-acquisition work.
 - UI guidelines / design systems / screen/state planning / visual UX review / UI bug triage → spawn a subagent instructed to use `ui-designer`.
 - React Native app setup / Expo or React Native CLI implementation / Metro / Android Studio + SDK setup / emulator testing → spawn a subagent instructed to use `react-native-app-dev` when that skill is available, otherwise use `coder` with explicit React Native mobile context.
-- Native Android app implementation / Gradle / Jetpack Compose / emulator testing / Play Store packaging → spawn a subagent instructed to use `android-app-dev` when that skill is available, otherwise use `coder` with explicit Android context.
+- Native Android app implementation / Gradle / Jetpack Compose / emulator testing / Play Store packaging/build artifacts → spawn a subagent instructed to use `android-app-dev` when that skill is available, otherwise use `coder` with explicit Android context.
 - Architecture / technical spec / system design / repo bootstrap decisions → spawn a subagent instructed to use `architect`.
 - Coding / tests / refactors / implementation / bug fixing → spawn one or more subagents instructed to use `coder`.
 - DevOps / CI/CD / deployment / observability / infrastructure / runbooks → spawn a subagent instructed to use `devops`.
