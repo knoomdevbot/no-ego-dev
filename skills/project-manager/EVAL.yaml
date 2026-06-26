@@ -8,6 +8,7 @@ expectations:
   - "delegates product, marketing, architecture, coding, devops, UI design, or QA work to specialist subagents"
   - "delegates React Native mobile app setup and implementation work to react-native-app-dev when applicable"
   - "delegates Google Play Console UI publishing AAB upload internal testing tester lists and rollout status work to play-store-publisher when applicable"
+  - "delegates Google Play CLI API automation fastlane supply EAS Submit Gradle Play Publisher and service account setup work to play-store-cli when applicable"
   - "sets up UI design tasks for each PRD before architecture or tech-spec work when the feature needs UI"
   - "writes or updates a durable UI guideline after the core PRD for new UI-bearing projects"
   - "requires UI-bearing tech specs to cite the UI guideline or feature UI brief"

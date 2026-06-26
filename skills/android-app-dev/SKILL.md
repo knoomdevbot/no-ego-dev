@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [no-ego-dev, android, mobile, kotlin, jetpack-compose]
-    related_skills: [project-manager, product-manager, ui-designer, play-store-publisher, coder, qa, devops]
+    related_skills: [project-manager, product-manager, ui-designer, play-store-publisher, play-store-cli, coder, qa, devops]
 ---
 
 # Android App Dev

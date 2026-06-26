@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [no-ego-dev, marketing, launch, app-store, growth]
-    related_skills: [project-manager, product-manager, ui-designer, play-store-publisher, devops]
+    related_skills: [project-manager, product-manager, ui-designer, play-store-publisher, play-store-cli, devops]
 ---
 
 # Marketer

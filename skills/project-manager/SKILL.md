@@ -55,6 +55,7 @@ Always spawn focused subagents for tasks that require any major NoEgoDev skill/d
 - Product management / PRD / user story / scope decisions → spawn a subagent instructed to use `product-manager`.
 - Marketing / launch planning / channel strategy / sincere outreach / app-store listing copy, ASO, localization, or ads → spawn a subagent instructed to use `marketer`.
 - Google Play Console UI publishing / AAB upload / internal testing / tester lists / rollout status → spawn a subagent instructed to use `play-store-publisher` when that skill is available; coordinate with `marketer` only for listing/ad/user-acquisition work.
+- Google Play CLI/API automation / fastlane supply / EAS Submit / Gradle Play Publisher / Play service account setup → spawn a subagent instructed to use `play-store-cli` when that skill is available; coordinate with `devops` for CI secret storage and pipelines.
 - UI guidelines / design systems / screen/state planning / visual UX review / UI bug triage → spawn a subagent instructed to use `ui-designer`.
 - React Native app setup / Expo or React Native CLI implementation / Metro / Android Studio + SDK setup / emulator testing → spawn a subagent instructed to use `react-native-app-dev` when that skill is available, otherwise use `coder` with explicit React Native mobile context.
 - Native Android app implementation / Gradle / Jetpack Compose / emulator testing / Play Store packaging/build artifacts → spawn a subagent instructed to use `android-app-dev` when that skill is available, otherwise use `coder` with explicit Android context.

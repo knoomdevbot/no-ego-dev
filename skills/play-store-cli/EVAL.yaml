@@ -1,0 +1,17 @@
+prompt: |
+  Use the play-store-cli skill for this realistic automation request:
+
+  "The Play Console UI was flaky during our first Android release. Set up a repeatable CLI path for future Google Play uploads. This is an Expo/React Native app with AAB builds. We might use fastlane supply or EAS Submit. Tell me what access is needed, how to validate it safely, and how the first automated internal-testing upload should run without accidentally publishing or overwriting listing metadata."
+expectations:
+  - "explains one-time Play Console prerequisites including app record API access service account JSON and Play Console user permissions"
+  - "does not ask for Google passwords or raw secrets in chat and stores service account JSON outside git or in CI secrets"
+  - "chooses EAS Submit for Expo when appropriate but documents fastlane supply as the general CLI fallback"
+  - "validates access with validate_play_store_json_key or equivalent before upload"
+  - "uses validate_only or draft release status for the first risky automated run"
+  - "checks package ID versionCode and AAB artifact before upload"
+  - "skips metadata images and screenshots for binary-only lanes to avoid accidental listing overwrite"
+  - "writes a project-local Google Play CLI runbook or publishing report with command track artifact secret location and current status"
+setupCommands: []
+teardownCommands: []
+parameters:
+  fixture: evaldata/README.md

@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [no-ego-dev, react-native, mobile, android, ios, typescript]
-    related_skills: [project-manager, product-manager, ui-designer, android-app-dev, play-store-publisher, coder, qa, devops]
+    related_skills: [project-manager, product-manager, ui-designer, android-app-dev, play-store-publisher, play-store-cli, coder, qa, devops]
 ---
 
 # React Native App Dev

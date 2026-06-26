@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [no-ego-dev, android, google-play, play-console, app-store, release]
-    related_skills: [project-manager, product-manager, marketer, android-app-dev, react-native-app-dev, devops, qa]
+    related_skills: [project-manager, product-manager, marketer, play-store-cli, android-app-dev, react-native-app-dev, devops, qa]
 ---
 
 # Play Store Publisher
@@ -206,7 +206,8 @@ Play Console is a complex web app. Use these habits:
 ## Handoffs
 
 - `android-app-dev` / `react-native-app-dev`: build failures, package ID fixes, versionCode changes, signing config, AAB generation.
-- `devops`: CI release build, secrets/service-account storage, automated EAS/fastlane submit, monitoring.
+- `play-store-cli`: service account setup, fastlane supply/EAS Submit/Gradle Play Publisher, CLI/API validation, CI release automation.
+- `devops`: CI release build, secrets/service-account storage, monitoring, and broader deployment operations.
 - `marketer`: store listing copy, screenshots positioning, launch/ad plan, country localization, Google App Campaigns.
 - `product-manager`: target audience, pricing/free-vs-paid, launch readiness, app access requirements, success metrics.
 - `qa`: install testing, smoke tests, opt-in link verification, device compatibility, regression checks.
